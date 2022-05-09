@@ -1,0 +1,31 @@
+<h2>{{data.formTitle}}</h2>
+
+<form [formGroup]="justinForm" (ngSubmit)="onSubmit()">
+    <!-- <mat-dialog-title> -->
+
+    <!-- </mat-dialog-title> -->
+    <!-- <mat-dialog-content> -->
+    <mat-form-field appearance="fill">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="firstName" [(ngModel)]="data.dbFirstName">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="lastName" [(ngModel)]="data.dbLastName">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+        <mat-label>Nice Test</mat-label>
+        <input matInput formControlName="niceTest" [(ngModel)]="data.dbNiceTest">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+        <mat-label>Nice Test 2</mat-label>
+        <input matInput formControlName="niceTest2" [(ngModel)]="data.dbNiceTest2">
+    </mat-form-field>
+    <!-- </mat-dialog-content> -->
+    <mat-dialog-actions>
+        <button mat-raised-button type="submit" [disabled]="!justinForm.valid">Confirm</button>
+        <button mat-raised-button color="warn" type="reset" (click)="onCancel()">Cancel</button>
+    </mat-dialog-actions>
+
+
+</form>

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NavigationComponent } from 'src/app/component/navigation/navigation.component';
+import { ModalTestComponent } from 'src/app/component/test/modal-test.component';
 
-describe('NavigationComponent', () => {
-  let component: NavigationComponent;
-  let fixture: ComponentFixture<NavigationComponent>;
+describe('ModalTestComponent', () => {
+  let component: ModalTestComponent;
+  let fixture: ComponentFixture<ModalTestComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NavigationComponent ]
+      declarations: [ ModalTestComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NavigationComponent);
+    fixture = TestBed.createComponent(ModalTestComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
