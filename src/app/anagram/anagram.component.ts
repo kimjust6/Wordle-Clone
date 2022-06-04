@@ -29,10 +29,11 @@ export class AnagramComponent implements OnInit {
       {
         var temp1 = this.words[i];
         var temp2 = this.words[j];
+        // console.log(temp1);
         if (this.isAnagram(temp1,temp2))
         {
-          // console.log(temp1);
-          // console.log(temp2);
+          console.log(temp1);
+          console.log(temp2);
 
         }
       }
