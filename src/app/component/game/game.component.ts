@@ -51,16 +51,27 @@ export class GameComponent implements OnInit {
   array: any = [];
   asciiPattern: string = '';
   values: string = '';
+  // the number of attempts made
   wordCount: number = 0;
+  // the number of letters typed
   letterCount: number = 0;
+  // the error message
   errorMessage: string = '';
+  // the answer to the wordle puzzle
   wordleAnswer: string = '';
+  // the state of the attempt
   correctness = '';
+  // state that manages if the game is over
   gameOver = false;
+  // state that manages win/loss
   gameWon = false;
   wordleNumber: any;
+  // object that holds all the wordle words
   allWordleWords: any;
 
+  readonly LOCAL_STORAGE_ARRAY: string = 'arrays';
+  readonly LOCAL_STORAGE_WORDLE_ANSWER: string = 'wordleAnswer';
+  readonly LOCAL_STORAGE_STATS: string = 'stats';
   //setting values for number of words
   readonly maxLetterCount: number = 5;
   readonly maxWordCount: number = 6;
@@ -74,7 +85,7 @@ export class GameComponent implements OnInit {
 
   ngOnInit(): void {
     // check if array is store in local storage
-    let myArrayString = localStorage.getItem('array');
+    let myArrayString = localStorage.getItem(this.LOCAL_STORAGE_ARRAY);
     if (myArrayString) {
       // restore it
       this.array = JSON.parse(myArrayString);
@@ -87,7 +98,8 @@ export class GameComponent implements OnInit {
         }
         if (this.wordCount === this.maxWordCount) {
           this.wordCount = 0;
-          localStorage.clear();
+          // localStorage.clear();
+          this.clearLocalStorage();
           this.getRandomWordle();
         }
       }
@@ -104,11 +116,20 @@ export class GameComponent implements OnInit {
     }
   }
 
+  clearLocalStorage() {
+    localStorage.removeItem(this.LOCAL_STORAGE_ARRAY);
+    localStorage.removeItem(this.LOCAL_STORAGE_WORDLE_ANSWER);
+    localStorage.clear();
+    console.log('clearing');
+  }
+
   getRandomWordle() {
     // get all the wordle words
     this.allWordleWords = this.wordleWord.getWords();
     // check if there is a word already cached, otherwise get a random one
-    let tempWordleAnswer = localStorage.getItem('wordleAnswer');
+    let tempWordleAnswer = localStorage.getItem(
+      this.LOCAL_STORAGE_WORDLE_ANSWER
+    );
     if (tempWordleAnswer && tempWordleAnswer != '') {
       this.wordleAnswer = tempWordleAnswer;
     } else {
@@ -116,7 +137,7 @@ export class GameComponent implements OnInit {
         this.allWordleWords[
           this.getRandomInt(this.allWordleWords.length)
         ].wordle.toUpperCase();
-      localStorage.setItem('wordleAnswer', this.wordleAnswer);
+      localStorage.setItem(this.LOCAL_STORAGE_WORDLE_ANSWER, this.wordleAnswer);
     }
 
     console.log(this.wordleAnswer);
@@ -134,7 +155,6 @@ export class GameComponent implements OnInit {
   handleKeyboardEvent(event: KeyboardEvent) {
     //check if game is over
     if (this.gameOver) {
-      localStorage.clear();
       return;
     }
 
@@ -211,8 +231,6 @@ export class GameComponent implements OnInit {
         //set the shake to true
         this.array[this.wordCount].shakeState = 'shake';
       }
-      // on enter set the local storage
-      localStorage.setItem('array', JSON.stringify(this.array));
     }
   };
 
@@ -265,6 +283,7 @@ export class GameComponent implements OnInit {
     if (correctLetters == this.maxLetterCount) {
       this.gameOver = true;
       this.gameWon = true;
+      this.updateStats(this.wordCount);
       this.openStatisticsComponent(true);
     } else {
       //partial answers
@@ -283,10 +302,41 @@ export class GameComponent implements OnInit {
 
       if (this.wordCount == this.maxWordCount - 1) {
         this.gameOver = true;
+        this.updateStats(this.wordCount);
         // this.setErrorMessage("Game Over!");
         this.openStatisticsComponent(false);
       }
     }
+    // if game isn't over, store it in local storage
+    if (!this.gameOver) {
+      localStorage.setItem(
+        this.LOCAL_STORAGE_ARRAY,
+        JSON.stringify(this.array)
+      );
+    }
+  }
+
+  updateStats(result: number) {
+    // update the stats localstorage
+    let tempStats = localStorage.getItem(this.LOCAL_STORAGE_STATS);
+    let tempStatsArr = [];
+    if (tempStats) {
+      tempStatsArr = JSON.parse(tempStats);
+    } else {
+      // initialize the array
+      for (let i = 0; i < this.maxWordCount + 1; ++i) {
+        tempStatsArr[i] = 0;
+      }
+    }
+    // push the current result into the array
+    ++tempStatsArr[this.wordCount - 1];
+    console.log(tempStatsArr);
+    this.clearLocalStorage();
+    console.log('clear');
+    localStorage.setItem(
+      this.LOCAL_STORAGE_STATS,
+      JSON.stringify(tempStatsArr)
+    );
   }
 
   //open game over modal
