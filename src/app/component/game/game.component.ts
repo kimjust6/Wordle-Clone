@@ -120,7 +120,6 @@ export class GameComponent implements OnInit {
     localStorage.removeItem(this.LOCAL_STORAGE_ARRAY);
     localStorage.removeItem(this.LOCAL_STORAGE_WORDLE_ANSWER);
     localStorage.clear();
-    console.log('clearing');
   }
 
   getRandomWordle() {
@@ -139,8 +138,6 @@ export class GameComponent implements OnInit {
         ].wordle.toUpperCase();
       localStorage.setItem(this.LOCAL_STORAGE_WORDLE_ANSWER, this.wordleAnswer);
     }
-
-    console.log(this.wordleAnswer);
   }
   setErrorMessage(message: string) {
     this.errorMessage = message;
@@ -330,9 +327,7 @@ export class GameComponent implements OnInit {
     }
     // push the current result into the array
     ++tempStatsArr[this.wordCount - 1];
-    console.log(tempStatsArr);
     this.clearLocalStorage();
-    console.log('clear');
     localStorage.setItem(
       this.LOCAL_STORAGE_STATS,
       JSON.stringify(tempStatsArr)
