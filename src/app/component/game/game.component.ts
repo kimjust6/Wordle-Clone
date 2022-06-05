@@ -299,7 +299,7 @@ export class GameComponent implements OnInit {
 
       if (this.wordCount == this.maxWordCount - 1) {
         this.gameOver = true;
-        this.updateStats(this.wordCount);
+        this.updateStats(this.wordCount + 1);
         // this.setErrorMessage("Game Over!");
         this.openStatisticsComponent(false);
       }
@@ -326,7 +326,7 @@ export class GameComponent implements OnInit {
       }
     }
     // push the current result into the array
-    ++tempStatsArr[this.wordCount - 1];
+    ++tempStatsArr[result];
     this.clearLocalStorage();
     localStorage.setItem(
       this.LOCAL_STORAGE_STATS,
