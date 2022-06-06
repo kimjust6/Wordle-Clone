@@ -7,6 +7,7 @@ import { DatePipe } from '@angular/common';
 // import wordleWords from '../../resources/words.json';
 import { LoadWordsService } from 'src/services/load-words.service';
 import { StatisticsComponent } from '../statistics/statistics.component';
+import { correctness } from 'src/app/utilities/interfaces';
 
 import {
   trigger,
@@ -93,6 +94,7 @@ export class GameComponent implements OnInit {
       this.wordCount = 0;
       for (let element of this.array) {
         // check if the letter is occupied, if it is, increment wordCount
+        // if (element.word[this.maxLetterCount - 1].correctness !== '') {
         if (element.word[this.maxLetterCount - 1].correctness !== '') {
           ++this.wordCount;
         }
@@ -269,10 +271,11 @@ export class GameComponent implements OnInit {
     for (var i = 0; i < this.maxLetterCount; i++) {
       if (this.array[this.wordCount].word[i].letter == this.wordleAnswer[i]) {
         hashmap[this.array[this.wordCount].word[i].letter] -= 1;
-        this.array[this.wordCount].word[i].correctness = 'fullCorrect';
+        this.array[this.wordCount].word[i].correctness =
+          correctness.fullCorrect;
         ++correctLetters;
       } else {
-        this.array[this.wordCount].word[i].correctness = 'incorrect';
+        this.array[this.wordCount].word[i].correctness = correctness.incorrect;
       }
     }
 
@@ -289,10 +292,12 @@ export class GameComponent implements OnInit {
           if (
             this.array[this.wordCount].word[j].letter == this.wordleAnswer[i] &&
             hashmap[this.array[this.wordCount].word[j].letter] > 0 &&
-            this.array[this.wordCount].word[j].correctness == 'incorrect'
+            this.array[this.wordCount].word[j].correctness ==
+              correctness.incorrect
           ) {
             hashmap[this.array[this.wordCount].word[j].letter] -= 1;
-            this.array[this.wordCount].word[j].correctness = 'halfCorrect';
+            this.array[this.wordCount].word[j].correctness =
+              correctness.halfCorrect;
           }
         }
       }
@@ -354,9 +359,11 @@ export class GameComponent implements OnInit {
     this.asciiPattern += '/' + this.maxWordCount + '\n';
     for (var i = 0; i < this.wordCount + 1; ++i) {
       for (var j = 0; j < this.maxLetterCount; ++j) {
-        if (this.array[i].word[j].correctness === 'fullCorrect') {
+        if (this.array[i].word[j].correctness === correctness.fullCorrect) {
           this.asciiPattern += '🟩';
-        } else if (this.array[i].word[j].correctness === 'halfCorrect') {
+        } else if (
+          this.array[i].word[j].correctness === correctness.halfCorrect
+        ) {
           this.asciiPattern += '🟨';
         } else {
           this.asciiPattern += '⬜';
@@ -370,5 +377,20 @@ export class GameComponent implements OnInit {
     (<StatisticsComponent>modalRef.componentInstance).modalRef = modalRef;
     (<StatisticsComponent>modalRef.componentInstance).asciiPattern =
       this.asciiPattern;
+  }
+
+  correctnessToString(_correctness: correctness): string {
+    let returnVal: string;
+    if (_correctness == correctness.fullCorrect) {
+      returnVal = 'fullCorrect';
+    } else if (_correctness == correctness.halfCorrect) {
+      returnVal = 'halfCorrect';
+    } else if (_correctness == correctness.incorrect) {
+      returnVal = 'incorrect';
+    }
+    else{
+      returnVal='impossible';
+    }
+    return returnVal;
   }
 }

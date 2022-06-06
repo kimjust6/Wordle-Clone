@@ -12,7 +12,7 @@
         
         <div class="letterContainer">
           <div>
-            <li class="singleLetter" [id]="letters.correctness" key="{ letters.key }; let innerIndex = index">
+            <li class="singleLetter" [id]="correctnessToString(letters.correctness)" key="{ letters.key }; let innerIndex = index">
               {{ letters.letter }}
             </li>
           </div>
