@@ -1,8 +1,16 @@
-<div class="container keyboard" >
+<div class="container keyboard">
   <ul class="list-none">
-    <div class="row" *ngFor="let row of keyboardArray">
-      <div class="letter" *ngFor="let letter of row.row" (click)="keyboardHandler(letter)">
-        <li >
+    <div
+      class="row"
+      *ngFor="let row of keyboardArray; let rowIndex = index"
+      [id]="getRowStyle(rowIndex)"
+    >
+      <div
+        class="letter"
+        *ngFor="let letter of row.row"
+        (click)="keyboardHandler(letter)"
+      >
+        <li>
           {{ letter }}
         </li>
       </div>

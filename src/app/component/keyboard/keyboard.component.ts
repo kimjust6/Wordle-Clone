@@ -34,4 +34,14 @@ export class KeyboardComponent implements OnInit {
   //   }
   //   return returnVal;
   // }
+
+  getRowStyle(rowNum: number): string {
+    let returnVal: string;
+    if (rowNum % 2) {
+      returnVal = 'oddKeyboard';
+    } else {
+      returnVal = 'evenKeyboard';
+    }
+    return returnVal;
+  }
 }
