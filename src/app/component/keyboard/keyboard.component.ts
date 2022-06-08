@@ -14,7 +14,7 @@ export class KeyboardComponent implements OnInit {
       row: ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
     },
     {
-      row: ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<-BACK'],
+      row: ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<- BACK'],
     },
   ];
   constructor() {}
@@ -35,6 +35,7 @@ export class KeyboardComponent implements OnInit {
   //   return returnVal;
   // }
 
+  // method that returns whether or the keyboard is even or odd
   getRowStyle(rowNum: number): string {
     let returnVal: string;
     if (rowNum % 2) {
