@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { EmitterService } from 'src/app/services/emitter.service';
 
 @Component({
   selector: 'app-keyboard',
@@ -17,23 +18,14 @@ export class KeyboardComponent implements OnInit {
       row: ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<- BACK'],
     },
   ];
-  constructor() {}
+  constructor(private emitterService: EmitterService) {}
 
   ngOnInit(): void {}
 
   keyboardHandler(letter: string) {
-    console.log(letter);
+    // emit the letter to be handle on subscribe
+    this.emitterService.loadKeyStrokeCtrl(letter);
   }
-
-  // getKey(val: string): string {
-  //   let returnVal: string;
-  //   if (val === 'ENTER') {
-  //     returnVal = "nice";
-  //   } else {
-  //     returnVal = val;
-  //   }
-  //   return returnVal;
-  // }
 
   // method that returns whether or the keyboard is even or odd
   getRowStyle(rowNum: number): string {

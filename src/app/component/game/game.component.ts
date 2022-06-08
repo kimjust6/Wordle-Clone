@@ -4,8 +4,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
 import { DatePipe } from '@angular/common';
 
-// import wordleWords from '../../resources/words.json';
-import { LoadWordsService } from 'src/services/load-words.service';
+import { EmitterService } from 'src/app/services/emitter.service';
+import { LoadWordsService } from 'src/app/services/load-words.service';
 import { StatisticsComponent } from '../statistics/statistics.component';
 import { correctness } from 'src/app/utilities/interfaces';
 
@@ -79,12 +79,23 @@ export class GameComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private wordleWord: LoadWordsService,
+    private emitterService: EmitterService,
     public datepipe: DatePipe
   ) {
     this.getRandomWordle();
   }
 
   ngOnInit(): void {
+    // subscribe to keypresses on virtual keyboard
+    this.emitterService.keyStrokeCtrlItem$.subscribe((keyStroke: string) => {
+      if (keyStroke?.length === 1) {
+        this.insertValue(keyStroke);
+      } else if (keyStroke === 'ENTER') {
+        this.handleEnter();
+      } else if (keyStroke === '<- BACK') {
+        this.handleBackspace();
+      }
+    });
     // check if array is store in local storage
     let myArrayString = localStorage.getItem(this.LOCAL_STORAGE_ARRAY);
     if (myArrayString) {
@@ -100,7 +111,6 @@ export class GameComponent implements OnInit {
         }
         if (this.wordCount === this.maxWordCount) {
           this.wordCount = 0;
-          // localStorage.clear();
           this.clearLocalStorage();
           this.getRandomWordle();
         }
@@ -118,12 +128,20 @@ export class GameComponent implements OnInit {
     }
   }
 
+  /**
+   * @name clearLocalStorage
+   * @description handles clearing all the local storage
+   */
   clearLocalStorage() {
     localStorage.removeItem(this.LOCAL_STORAGE_ARRAY);
     localStorage.removeItem(this.LOCAL_STORAGE_WORDLE_ANSWER);
     localStorage.clear();
   }
 
+  /**
+   * @name getRandomWordle
+   * @description gets a random word from the word and
+   */
   getRandomWordle() {
     // get all the wordle words
     this.allWordleWords = this.wordleWord.getWords();
@@ -141,10 +159,22 @@ export class GameComponent implements OnInit {
       localStorage.setItem(this.LOCAL_STORAGE_WORDLE_ANSWER, this.wordleAnswer);
     }
   }
+
+  /**
+   * @name setErrorMessage
+   * @description sets the error message on the screen
+   * @param message the message that is to be displayed
+   */
   setErrorMessage(message: string) {
     this.errorMessage = message;
   }
 
+  /**
+   * @name getRandomInt
+   * @description returns a random integer from 0 to number - 1
+   * @param max max-1 is the largest number that can be returned
+   * @returns
+   */
   getRandomInt(max: number) {
     return Math.floor(Math.random() * max);
   }
@@ -181,7 +211,12 @@ export class GameComponent implements OnInit {
       this.handleEnter();
     }
   }
-  //insert the typed key into the json
+
+  /**
+   * @name insertValue
+   * @description method that inserts the keystroke into the json object/array
+   * @param letter the letter to be inserted
+   */
   insertValue = (letter: String) => {
     if (this.letterCount < this.maxLetterCount) {
       this.array[Math.floor(this.wordCount)].word[this.letterCount].letter =
@@ -189,22 +224,35 @@ export class GameComponent implements OnInit {
       ++this.letterCount;
     }
   };
-  //function that checks if input is letters
+
+  /**
+   * @name isLetter
+   * @description method that checks if input is letters
+   * @param str
+   * @returns boolean: true if is a letter, false otherwise
+   */
   isLetter = function (str: String) {
     return str.length === 1 && str.match(/[a-zA-Z]/i);
   };
 
-  //erase the last letter
-  handleBackspace = () => {
+  /**
+   * @name handleBackspace
+   * @description method that erases the last letter
+   */
+  handleBackspace() {
     //check for errors
     if (this.letterCount > 0) {
       --this.letterCount;
       // erase the last value and decrement
       this.array[Math.floor(this.wordCount)].word[this.letterCount].letter = '';
     }
-  };
-  //validate word and
-  handleEnter = () => {
+  }
+
+  /**
+   * @name handleEnter
+   * @desc validates word and lights up letters if is valid word
+   */
+  handleEnter() {
     //check if we have enough letters
     if (this.letterCount < this.maxLetterCount) {
       //handle not enough letters
@@ -231,9 +279,13 @@ export class GameComponent implements OnInit {
         this.array[this.wordCount].shakeState = 'shake';
       }
     }
-  };
+  }
 
-  // loop through words to see if word attempted is valid
+  /**
+   * @name isValidWord
+   * @description loops through wordle words to see if submitted word is valid
+   * @returns boolean: true if is valid, false otherwise
+   */
   isValidWord = () => {
     var foundWord = false;
     //construct the word from the array
@@ -254,8 +306,10 @@ export class GameComponent implements OnInit {
     return foundWord;
   };
 
-  //handle valid words
-  //ie checks if the letters are in the right spot etc
+  /**
+   * @name handleValidWord
+   * @description checks if the letters are in the right spot etc (ie yellow or green)
+   */
   handleValidWord() {
     var correctLetters = 0;
     var hashmap: any = {};
@@ -318,6 +372,11 @@ export class GameComponent implements OnInit {
     }
   }
 
+  /**
+   * @name updateStats
+   * @description updates the array of stats in localStorage
+   * @param result the result of the last game (which will be stored)
+   */
   updateStats(result: number) {
     // update the stats localstorage
     let tempStats = localStorage.getItem(this.LOCAL_STORAGE_STATS);
@@ -339,7 +398,11 @@ export class GameComponent implements OnInit {
     );
   }
 
-  //open game over modal
+  /**
+   * @name openStatisticsComponent
+   * @description the modal/dialog that will open when the game is over
+   * @param didWin boolean that passes if user won or not
+   */
   openStatisticsComponent(didWin: boolean) {
     const modalRef = this.modalService.open(StatisticsComponent, {
       backdrop: false,
@@ -379,6 +442,12 @@ export class GameComponent implements OnInit {
       this.asciiPattern;
   }
 
+  /**
+   * @name correctnessToString
+   * @description converts the correctness from enum to string
+   * @param _correctness enum that has the value of the correctness
+   * @returns: string
+   */
   correctnessToString(_correctness: correctness): string {
     let returnVal: string;
     if (_correctness == correctness.fullCorrect) {
@@ -387,9 +456,8 @@ export class GameComponent implements OnInit {
       returnVal = 'halfCorrect';
     } else if (_correctness == correctness.incorrect) {
       returnVal = 'incorrect';
-    }
-    else{
-      returnVal='impossible';
+    } else {
+      returnVal = 'impossible';
     }
     return returnVal;
   }

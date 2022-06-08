@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class EmitterService {
-  private keyStrokeCtrl = new Subject();
+  private keyStrokeCtrl = new Subject<string>();
   // subscribe to this item to see when keyStrokeCtrl changes
   public keyStrokeCtrlItem$ = this.keyStrokeCtrl.asObservable();
   constructor() {}
