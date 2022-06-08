@@ -9,6 +9,7 @@
         class="letter"
         *ngFor="let letter of row.row"
         (click)="keyboardHandler(letter)"
+        [id]="styleArray[letter]"
       >
         <li>
           {{ letter }}

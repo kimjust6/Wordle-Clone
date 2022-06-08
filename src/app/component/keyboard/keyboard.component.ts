@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { EmitterService } from 'src/app/services/emitter.service';
-
+import { CommonService } from 'src/app/services/common.service';
+import { kbCorrectness } from 'src/app/utilities/interfaces';
 @Component({
   selector: 'app-keyboard',
   templateUrl: './keyboard.component.html',
   styleUrls: ['./keyboard.component.scss'],
 })
 export class KeyboardComponent implements OnInit {
-  keyboardArray = [
+  public keyboardArray = [
     {
       row: ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
     },
@@ -18,9 +19,22 @@ export class KeyboardComponent implements OnInit {
       row: ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<- BACK'],
     },
   ];
-  constructor(private emitterService: EmitterService) {}
 
-  ngOnInit(): void {}
+  public styleArray: any = {};
+  constructor(
+    private emitterService: EmitterService,
+    public commonService: CommonService
+  ) {}
+
+  ngOnInit(): void {
+    this.emitterService.KBCorrectnessCtrlItem$.subscribe(
+      (kbCor: kbCorrectness) => {
+        this.styleArray[kbCor.letter] = this.commonService.correctnessToString(
+          kbCor.correctness
+        );
+      }
+    );
+  }
 
   keyboardHandler(letter: string) {
     // emit the letter to be handle on subscribe

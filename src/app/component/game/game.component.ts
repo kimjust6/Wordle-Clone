@@ -6,8 +6,9 @@ import { DatePipe } from '@angular/common';
 
 import { EmitterService } from 'src/app/services/emitter.service';
 import { LoadWordsService } from 'src/app/services/load-words.service';
+import { CommonService } from 'src/app/services/common.service';
 import { StatisticsComponent } from '../statistics/statistics.component';
-import { correctness } from 'src/app/utilities/interfaces';
+import { correctness, kbCorrectness } from 'src/app/utilities/interfaces';
 
 import {
   trigger,
@@ -29,7 +30,7 @@ import {
       transition(
         'noShake => shake',
         animate(
-          '200ms ease-in',
+          '250ms ease-in',
           keyframes([
             style({ transform: 'translate3d(-4%, 0, 0)', offset: 0.1 }),
             style({ transform: 'translate3d(4%, 0, 0)', offset: 0.2 }),
@@ -80,6 +81,7 @@ export class GameComponent implements OnInit {
     private modalService: NgbModal,
     private wordleWord: LoadWordsService,
     private emitterService: EmitterService,
+    public commonService: CommonService,
     public datepipe: DatePipe
   ) {
     this.getRandomWordle();
@@ -154,7 +156,7 @@ export class GameComponent implements OnInit {
     } else {
       this.wordleAnswer =
         this.allWordleWords[
-          this.getRandomInt(this.allWordleWords.length)
+          this.commonService.getRandomInt(this.allWordleWords.length)
         ].wordle.toUpperCase();
       localStorage.setItem(this.LOCAL_STORAGE_WORDLE_ANSWER, this.wordleAnswer);
     }
@@ -167,16 +169,6 @@ export class GameComponent implements OnInit {
    */
   setErrorMessage(message: string) {
     this.errorMessage = message;
-  }
-
-  /**
-   * @name getRandomInt
-   * @description returns a random integer from 0 to number - 1
-   * @param max max-1 is the largest number that can be returned
-   * @returns
-   */
-  getRandomInt(max: number) {
-    return Math.floor(Math.random() * max);
   }
 
   //on keypressdown for the whole page
@@ -217,13 +209,13 @@ export class GameComponent implements OnInit {
    * @description method that inserts the keystroke into the json object/array
    * @param letter the letter to be inserted
    */
-  insertValue = (letter: String) => {
+  insertValue(letter: String) {
     if (this.letterCount < this.maxLetterCount) {
       this.array[Math.floor(this.wordCount)].word[this.letterCount].letter =
         letter;
       ++this.letterCount;
     }
-  };
+  }
 
   /**
    * @name isLetter
@@ -286,7 +278,7 @@ export class GameComponent implements OnInit {
    * @description loops through wordle words to see if submitted word is valid
    * @returns boolean: true if is valid, false otherwise
    */
-  isValidWord = () => {
+  isValidWord() {
     var foundWord = false;
     //construct the word from the array
     var theGuessWord = '';
@@ -304,7 +296,7 @@ export class GameComponent implements OnInit {
       }
     }
     return foundWord;
-  };
+  }
 
   /**
    * @name handleValidWord
@@ -327,9 +319,19 @@ export class GameComponent implements OnInit {
         hashmap[this.array[this.wordCount].word[i].letter] -= 1;
         this.array[this.wordCount].word[i].correctness =
           correctness.fullCorrect;
+        // create the variable to be emitted
+        this.emitKB(
+          this.array[this.wordCount].word[i].letter,
+          correctness.fullCorrect
+        );
+
         ++correctLetters;
       } else {
         this.array[this.wordCount].word[i].correctness = correctness.incorrect;
+        this.emitKB(
+          this.array[this.wordCount].word[i].letter,
+          correctness.incorrect
+        );
       }
     }
 
@@ -352,6 +354,11 @@ export class GameComponent implements OnInit {
             hashmap[this.array[this.wordCount].word[j].letter] -= 1;
             this.array[this.wordCount].word[j].correctness =
               correctness.halfCorrect;
+
+            this.emitKB(
+              this.array[this.wordCount].word[j].letter,
+              correctness.halfCorrect
+            );
           }
         }
       }
@@ -442,23 +449,13 @@ export class GameComponent implements OnInit {
       this.asciiPattern;
   }
 
-  /**
-   * @name correctnessToString
-   * @description converts the correctness from enum to string
-   * @param _correctness enum that has the value of the correctness
-   * @returns: string
-   */
-  correctnessToString(_correctness: correctness): string {
-    let returnVal: string;
-    if (_correctness == correctness.fullCorrect) {
-      returnVal = 'fullCorrect';
-    } else if (_correctness == correctness.halfCorrect) {
-      returnVal = 'halfCorrect';
-    } else if (_correctness == correctness.incorrect) {
-      returnVal = 'incorrect';
-    } else {
-      returnVal = 'impossible';
-    }
-    return returnVal;
+  emitKB(_letter: string, _correctness: correctness) {
+    // create the variable to be emitted
+    let myKBCorrectness: kbCorrectness = {
+      letter: _letter,
+      correctness: _correctness,
+    };
+    // emit the variable
+    this.emitterService.loadKBCorrectnessCtrl(myKBCorrectness);
   }
 }

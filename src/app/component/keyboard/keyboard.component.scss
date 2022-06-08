@@ -49,3 +49,18 @@
 #evenKeyboard {
   margin-right: 0.5%;
 }
+
+#incorrect {
+  background-color: $incorrect;
+  color: $letterColor;
+}
+
+#halfCorrect {
+  background-color: $halfCorrect;
+  color: $letterColor;
+}
+
+#fullCorrect {
+  background-color: $fullCorrect;
+  color: $letterColor;
+}
