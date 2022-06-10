@@ -3,6 +3,7 @@ import { HostListener } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
 import { DatePipe } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 import { EmitterService } from 'src/app/services/emitter.service';
 import { LoadWordsService } from 'src/app/services/load-words.service';
@@ -49,6 +50,7 @@ import {
   ],
 })
 export class GameComponent implements OnInit {
+  private subscriptions: Subscription[] = [];
   word: any = [];
   array: any = [];
   asciiPattern: string = '';
@@ -87,17 +89,24 @@ export class GameComponent implements OnInit {
     this.getRandomWordle();
   }
 
+  ngOnDestroy() {
+    for (let sub of this.subscriptions) {
+      sub.unsubscribe();
+    }
+  }
   ngOnInit(): void {
     // subscribe to keypresses on virtual keyboard
-    this.emitterService.keyStrokeCtrlItem$.subscribe((keyStroke: string) => {
-      if (keyStroke?.length === 1) {
-        this.insertValue(keyStroke);
-      } else if (keyStroke === 'ENTER') {
-        this.handleEnter();
-      } else if (keyStroke === '<- BACK') {
-        this.handleBackspace();
-      }
-    });
+    this.subscriptions.push(
+      this.emitterService.keyStrokeCtrlItem$.subscribe((keyStroke: string) => {
+        if (keyStroke?.length === 1) {
+          this.insertValue(keyStroke);
+        } else if (keyStroke === 'ENTER') {
+          this.handleEnter();
+        } else if (keyStroke === '<- BACK') {
+          this.handleBackspace();
+        }
+      })
+    );
     // check if array is store in local storage
     let myArrayString = localStorage.getItem(this.LOCAL_STORAGE_ARRAY);
     if (myArrayString) {
