@@ -99,10 +99,14 @@ export class GameComponent implements OnInit {
     this.subscriptions.push(
       this.emitterService.keyStrokeCtrlItem$.subscribe((keyStroke: string) => {
         if (keyStroke?.length === 1) {
+          this.setErrorMessage('');
+          this.array[this.wordCount].shakeState = 'noShake';
           this.insertValue(keyStroke);
         } else if (keyStroke === 'ENTER') {
           this.handleEnter();
         } else if (keyStroke === '<- BACK') {
+          this.setErrorMessage('');
+          this.array[this.wordCount].shakeState = 'noShake';
           this.handleBackspace();
         }
       })
