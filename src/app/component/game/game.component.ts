@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { HostListener } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
@@ -50,6 +50,8 @@ import {
   ],
 })
 export class GameComponent implements OnInit {
+  @Input() passedWord: string = '';
+
   private subscriptions: Subscription[] = [];
   word: any = [];
   array: any = [];
@@ -85,9 +87,7 @@ export class GameComponent implements OnInit {
     private emitterService: EmitterService,
     public commonService: CommonService,
     public datepipe: DatePipe
-  ) {
-    this.getRandomWordle();
-  }
+  ) {}
 
   ngOnDestroy() {
     for (let sub of this.subscriptions) {
@@ -95,6 +95,7 @@ export class GameComponent implements OnInit {
     }
   }
   ngOnInit(): void {
+    this.getRandomWordle();
     // subscribe to keypresses on virtual keyboard
     this.subscriptions.push(
       this.emitterService.keyStrokeCtrlItem$.subscribe((keyStroke: string) => {
@@ -158,20 +159,28 @@ export class GameComponent implements OnInit {
    * @description gets a random word from the word and
    */
   getRandomWordle() {
-    // get all the wordle words
-    this.allWordleWords = this.wordleWord.getWords();
-    // check if there is a word already cached, otherwise get a random one
-    let tempWordleAnswer = localStorage.getItem(
-      this.LOCAL_STORAGE_WORDLE_ANSWER
-    );
-    if (tempWordleAnswer && tempWordleAnswer != '') {
-      this.wordleAnswer = tempWordleAnswer;
-    } else {
-      this.wordleAnswer =
-        this.allWordleWords[
-          this.commonService.getRandomInt(this.allWordleWords.length)
-        ].wordle.toUpperCase();
+    if (this.passedWord !== '') {
+      this.wordleAnswer = this.passedWord;
       localStorage.setItem(this.LOCAL_STORAGE_WORDLE_ANSWER, this.wordleAnswer);
+    } else {
+      // get all the wordle words
+      this.allWordleWords = this.wordleWord.getWords();
+      // check if there is a word already cached, otherwise get a random one
+      let tempWordleAnswer = localStorage.getItem(
+        this.LOCAL_STORAGE_WORDLE_ANSWER
+      );
+      if (tempWordleAnswer && tempWordleAnswer != '') {
+        this.wordleAnswer = tempWordleAnswer;
+      } else {
+        this.wordleAnswer =
+          this.allWordleWords[
+            this.commonService.getRandomInt(this.allWordleWords.length)
+          ].wordle.toUpperCase();
+        localStorage.setItem(
+          this.LOCAL_STORAGE_WORDLE_ANSWER,
+          this.wordleAnswer
+        );
+      }
     }
   }
 
