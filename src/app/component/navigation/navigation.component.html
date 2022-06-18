@@ -1,6 +1,6 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light my-navbar">
   <div class="container">
-    <a class="navbar-brand" href="">Wordle!</a>
+    <a class="navbar-brand my-navbar" href="">Shower Wordle</a>
     <button
       class="navbar-toggler"
       type="button"
@@ -15,16 +15,24 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href=""
-            >Home <span class="sr-only">(current)</span></a
-          >
+        <li
+          class="nav-item"
+          [className]="gameNo == gameNumberType.first ? 'active' : ''"
+        >
+          <a class="nav-link" href="/game/1">First</a>
         </li>
-        <!-- <li>
-          <a class="nav-link" href="solver"
-            >Wordle Solver <span class="sr-only">(current)</span></a
-          >
-        </li> -->
+        <li
+          class="nav-item"
+          [className]="gameNo == gameNumberType.second ? 'active' : ''"
+        >
+          <a class="nav-link" href="/game/2">Second</a>
+        </li>
+        <li
+          class="nav-item"
+          [className]="gameNo == gameNumberType.third ? 'active' : ''"
+        >
+          <a class="nav-link" href="/game/3">Third</a>
+        </li>
       </ul>
     </div>
   </div>

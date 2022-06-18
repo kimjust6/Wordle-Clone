@@ -1,8 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription, forkJoin, combineLatestWith } from 'rxjs';
+
 import { EmitterService } from 'src/app/services/emitter.service';
 import { CommonService } from 'src/app/services/common.service';
-import { correctness, kbCorrectness } from 'src/app/utilities/interfaces';
-import { Subscription } from 'rxjs';
+import {
+  correctness,
+  gameNumber,
+  kbCorrectness,
+} from 'src/app/utilities/interfaces';
 @Component({
   selector: 'app-keyboard',
   templateUrl: './keyboard.component.html',
@@ -10,7 +15,8 @@ import { Subscription } from 'rxjs';
 })
 export class KeyboardComponent implements OnInit {
   private subscriptions: Subscription[] = [];
-
+  private readonly KB_STYLE_ARRAY: string = 'kbStyle';
+  private gameNo: gameNumber = gameNumber.null;
   public keyboardArray = [
     {
       row: ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -27,10 +33,52 @@ export class KeyboardComponent implements OnInit {
   constructor(
     private emitterService: EmitterService,
     public commonService: CommonService
-  ) {}
+  ) {
+    // subscribe to get the :gameNo from activated route
+    this.subscriptions.push(
+      this.emitterService.pageNumberCtrlItem$.subscribe((res: gameNumber) => {
+        this.gameNo = res;
 
-  ngOnInit(): void {
-    // subscribe to the service
+        // load keyboard styles from localStorage
+        let myKBStyle = localStorage.getItem(this.getKBStyleKey());
+        if (myKBStyle) {
+          let savedKB = JSON.parse(myKBStyle);
+          let keys = Object.entries(savedKB);
+          let correctType: correctness;
+          for (let key of keys) {
+            // convert string to kb object
+            if (
+              this.commonService.correctnessToString(correctness.fullCorrect) ==
+              key[1]
+            ) {
+              correctType = correctness.fullCorrect;
+            } else if (
+              this.commonService.correctnessToString(correctness.halfCorrect) ==
+              key[1]
+            ) {
+              correctType = correctness.halfCorrect;
+            } else if (
+              this.commonService.correctnessToString(correctness.incorrect) ==
+              key[1]
+            ) {
+              correctType = correctness.incorrect;
+            } else {
+              correctType = correctness.incorrect;
+            }
+
+            // create the temp object
+            let tempkbCorrectness: kbCorrectness = {
+              letter: key[0],
+              correctness: correctType,
+            };
+
+            this.emitterService.loadKBCorrectnessCtrl(tempkbCorrectness);
+          }
+        }
+      })
+    );
+
+    // subscribe to the kb correctness service
     this.subscriptions.push(
       this.emitterService.KBCorrectnessCtrlItem$.subscribe(
         (kbCor: kbCorrectness) => {
@@ -48,48 +96,16 @@ export class KeyboardComponent implements OnInit {
             this.styleArray[kbCor.letter] =
               this.commonService.correctnessToString(kbCor.correctness);
           }
-          localStorage.setItem('kbStyle', JSON.stringify(this.styleArray));
+          localStorage.setItem(
+            this.getKBStyleKey(),
+            JSON.stringify(this.styleArray)
+          );
         }
       )
     );
+  } // constructor
 
-    // load keyboard styles from localStorage
-    let myKBStyle = localStorage.getItem('kbStyle');
-    if (myKBStyle) {
-      let savedKB = JSON.parse(myKBStyle);
-      let keys = Object.entries(savedKB);
-      let correctType: correctness;
-      for (let key of keys) {
-        // convert string to kb object
-        if (
-          this.commonService.correctnessToString(correctness.fullCorrect) ==
-          key[1]
-        ) {
-          correctType = correctness.fullCorrect;
-        } else if (
-          this.commonService.correctnessToString(correctness.halfCorrect) ==
-          key[1]
-        ) {
-          correctType = correctness.halfCorrect;
-        } else if (
-          this.commonService.correctnessToString(correctness.incorrect) ==
-          key[1]
-        ) {
-          correctType = correctness.incorrect;
-        } else {
-          correctType = correctness.incorrect;
-        }
-
-        // create the temp object
-        let tempkbCorrectness: kbCorrectness = {
-          letter: key[0],
-          correctness: correctType,
-        };
-
-        this.emitterService.loadKBCorrectnessCtrl(tempkbCorrectness);
-      }
-    }
-  } // ngOnInit
+  ngOnInit(): void {} // ngOnInit
 
   keyboardHandler(letter: string) {
     // emit the letter to be handle on subscribe
@@ -111,5 +127,9 @@ export class KeyboardComponent implements OnInit {
     for (let sub of this.subscriptions) {
       sub.unsubscribe();
     }
+  }
+
+  getKBStyleKey() {
+    return this.gameNo + this.KB_STYLE_ARRAY;
   }
 }

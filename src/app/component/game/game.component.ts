@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { HostListener } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,6 +10,8 @@ import { LoadWordsService } from 'src/app/services/load-words.service';
 import { CommonService } from 'src/app/services/common.service';
 import { StatisticsComponent } from '../statistics/statistics.component';
 import { correctness, kbCorrectness } from 'src/app/utilities/interfaces';
+import { ActivatedRoute } from '@angular/router';
+import { gameNumber } from 'src/app/utilities/interfaces';
 
 import {
   trigger,
@@ -50,59 +52,100 @@ import {
   ],
 })
 export class GameComponent implements OnInit {
-  private subscriptions: Subscription[] = [];
-  word: any = [];
-  array: any = [];
-  asciiPattern: string = '';
-  values: string = '';
-  // the number of attempts made
-  wordCount: number = 0;
-  // the number of letters typed
-  letterCount: number = 0;
-  // the error message
-  errorMessage: string = '';
-  // the answer to the wordle puzzle
-  wordleAnswer: string = '';
-  // the state of the attempt
-  correctness = '';
-  // state that manages if the game is over
-  gameOver = false;
-  // state that manages win/loss
-  gameWon = false;
-  wordleNumber: any;
-  // object that holds all the wordle words
-  allWordleWords: any;
+  @Input() passedWord: string = '';
+  @Input() resetOnGameOver: boolean = true;
 
-  readonly LOCAL_STORAGE_ARRAY: string = 'arrays';
-  readonly LOCAL_STORAGE_WORDLE_ANSWER: string = 'wordleAnswer';
-  readonly LOCAL_STORAGE_STATS: string = 'stats';
+  private subscriptions: Subscription[] = [];
+  public word: any = [];
+  public array: any = [];
+  public asciiPattern: string = '';
+  public values: string = '';
+  // the number of attempts made
+  public wordCount: number = 0;
+  // the number of letters typed
+  public letterCount: number = 0;
+  // the error message
+  public errorMessage: string = '';
+  // the answer to the wordle puzzle
+  public wordleAnswer: string = '';
+  // the state of the attempt
+  public correctness = '';
+  // state that manages if the game is over
+  public isGameOver = false;
+  // state that manages win/loss
+  public gameWon = false;
+  public wordleNumber: any;
+  // object that holds all the wordle words
+  public allWordleWords: any;
+
+  private readonly LOCAL_STORAGE_ARRAY: string = 'arrays';
+  private readonly LOCAL_STORAGE_WORDLE_ANSWER: string = 'wordleAnswer';
+  private readonly LOCAL_STORAGE_STATS: string = 'stats';
+
   //setting values for number of words
-  readonly maxLetterCount: number = 5;
-  readonly maxWordCount: number = 6;
+  private readonly maxLetterCount: number = 5;
+  private readonly maxWordCount: number = 6;
   constructor(
     private modalService: NgbModal,
     private wordleWord: LoadWordsService,
     private emitterService: EmitterService,
     public commonService: CommonService,
+    private activatedRoute: ActivatedRoute,
     public datepipe: DatePipe
   ) {
-    this.getRandomWordle();
+    // get the page number from route
+    let gameNo = this.activatedRoute.snapshot.paramMap.get('gameNo');
+    let emitValue: gameNumber;
+
+    switch (Number(gameNo)) {
+      case gameNumber.first: {
+        emitValue = gameNumber.first;
+        break;
+      }
+      case gameNumber.second: {
+        emitValue = gameNumber.second;
+        break;
+      }
+      case gameNumber.third: {
+        emitValue = gameNumber.third;
+        break;
+      }
+      default: {
+        // value of 0
+        emitValue = gameNumber.null;
+      }
+    }
+    // if not 0, emit the value
+    if (emitValue !== gameNumber.null) {
+      this.commonService.delay(100).then(() => {
+        this.emitterService.loadpageNumberCtrl(emitValue);
+      });
+    }
+
+    this.LOCAL_STORAGE_ARRAY = emitValue + this.LOCAL_STORAGE_ARRAY;
+    this.LOCAL_STORAGE_WORDLE_ANSWER =
+      emitValue + this.LOCAL_STORAGE_WORDLE_ANSWER;
   }
 
   ngOnDestroy() {
     for (let sub of this.subscriptions) {
-      sub.unsubscribe();
+      sub?.unsubscribe();
     }
   }
   ngOnInit(): void {
+    this.getRandomWordle();
     // subscribe to keypresses on virtual keyboard
     this.subscriptions.push(
       this.emitterService.keyStrokeCtrlItem$.subscribe((keyStroke: string) => {
         if (keyStroke?.length === 1) {
+          this.setErrorMessage('');
+          this.array[this.wordCount].shakeState = 'noShake';
           this.insertValue(keyStroke);
         } else if (keyStroke === 'ENTER') {
           this.handleEnter();
         } else if (keyStroke === '<- BACK') {
+          this.setErrorMessage('');
+          this.array[this.wordCount].shakeState = 'noShake';
           this.handleBackspace();
         }
       })
@@ -120,7 +163,7 @@ export class GameComponent implements OnInit {
         if (element.word[this.maxLetterCount - 1].correctness !== '') {
           ++this.wordCount;
         }
-        if (this.wordCount === this.maxWordCount) {
+        if (this.wordCount === this.maxWordCount && this.resetOnGameOver) {
           this.wordCount = 0;
           this.clearLocalStorage();
           this.getRandomWordle();
@@ -154,20 +197,28 @@ export class GameComponent implements OnInit {
    * @description gets a random word from the word and
    */
   getRandomWordle() {
-    // get all the wordle words
-    this.allWordleWords = this.wordleWord.getWords();
-    // check if there is a word already cached, otherwise get a random one
-    let tempWordleAnswer = localStorage.getItem(
-      this.LOCAL_STORAGE_WORDLE_ANSWER
-    );
-    if (tempWordleAnswer && tempWordleAnswer != '') {
-      this.wordleAnswer = tempWordleAnswer;
-    } else {
-      this.wordleAnswer =
-        this.allWordleWords[
-          this.commonService.getRandomInt(this.allWordleWords.length)
-        ].wordle.toUpperCase();
+    if (this.passedWord !== '') {
+      this.wordleAnswer = this.passedWord;
       localStorage.setItem(this.LOCAL_STORAGE_WORDLE_ANSWER, this.wordleAnswer);
+    } else {
+      // get all the wordle words
+      this.allWordleWords = this.wordleWord.getWords();
+      // check if there is a word already cached, otherwise get a random one
+      let tempWordleAnswer = localStorage.getItem(
+        this.LOCAL_STORAGE_WORDLE_ANSWER
+      );
+      if (tempWordleAnswer && tempWordleAnswer != '') {
+        this.wordleAnswer = tempWordleAnswer;
+      } else {
+        this.wordleAnswer =
+          this.allWordleWords[
+            this.commonService.getRandomInt(this.allWordleWords.length)
+          ].wordle.toUpperCase();
+        localStorage.setItem(
+          this.LOCAL_STORAGE_WORDLE_ANSWER,
+          this.wordleAnswer
+        );
+      }
     }
   }
 
@@ -184,7 +235,7 @@ export class GameComponent implements OnInit {
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     //check if game is over
-    if (this.gameOver) {
+    if (this.isGameOver) {
       return;
     }
 
@@ -346,8 +397,9 @@ export class GameComponent implements OnInit {
 
     // check if we are fully correct
     if (correctLetters == this.maxLetterCount) {
-      this.gameOver = true;
+      this.isGameOver = true;
       this.gameWon = true;
+
       this.updateStats(this.wordCount);
       this.openStatisticsComponent(true);
     } else {
@@ -373,14 +425,15 @@ export class GameComponent implements OnInit {
       }
 
       if (this.wordCount == this.maxWordCount - 1) {
-        this.gameOver = true;
+        this.isGameOver = true;
         this.updateStats(this.wordCount + 1);
         // this.setErrorMessage("Game Over!");
         this.openStatisticsComponent(false);
       }
     }
     // if game isn't over, store it in local storage
-    if (!this.gameOver) {
+    // if (!this.isGameOver)
+    {
       localStorage.setItem(
         this.LOCAL_STORAGE_ARRAY,
         JSON.stringify(this.array)
@@ -407,7 +460,9 @@ export class GameComponent implements OnInit {
     }
     // push the current result into the array
     ++tempStatsArr[result];
-    this.clearLocalStorage();
+    if (this.resetOnGameOver) {
+      this.clearLocalStorage();
+    }
     localStorage.setItem(
       this.LOCAL_STORAGE_STATS,
       JSON.stringify(tempStatsArr)
