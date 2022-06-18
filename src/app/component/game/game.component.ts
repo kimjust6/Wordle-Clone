@@ -81,7 +81,7 @@ export class GameComponent implements OnInit {
   private readonly LOCAL_STORAGE_ARRAY: string = 'arrays';
   private readonly LOCAL_STORAGE_WORDLE_ANSWER: string = 'wordleAnswer';
   private readonly LOCAL_STORAGE_STATS: string = 'stats';
-  
+
   //setting values for number of words
   private readonly maxLetterCount: number = 5;
   private readonly maxWordCount: number = 6;
@@ -116,7 +116,7 @@ export class GameComponent implements OnInit {
       }
     }
     // if not 0, emit the value
-    if (emitValue) {
+    if (emitValue !== gameNumber.null) {
       this.commonService.delay(100).then(() => {
         this.emitterService.loadpageNumberCtrl(emitValue);
       });
@@ -163,7 +163,7 @@ export class GameComponent implements OnInit {
         if (element.word[this.maxLetterCount - 1].correctness !== '') {
           ++this.wordCount;
         }
-        if (this.wordCount === this.maxWordCount) {
+        if (this.wordCount === this.maxWordCount && this.resetOnGameOver) {
           this.wordCount = 0;
           this.clearLocalStorage();
           this.getRandomWordle();
@@ -399,6 +399,7 @@ export class GameComponent implements OnInit {
     if (correctLetters == this.maxLetterCount) {
       this.isGameOver = true;
       this.gameWon = true;
+
       this.updateStats(this.wordCount);
       this.openStatisticsComponent(true);
     } else {
@@ -431,7 +432,8 @@ export class GameComponent implements OnInit {
       }
     }
     // if game isn't over, store it in local storage
-    if (!this.isGameOver) {
+    // if (!this.isGameOver)
+    {
       localStorage.setItem(
         this.LOCAL_STORAGE_ARRAY,
         JSON.stringify(this.array)
@@ -458,7 +460,9 @@ export class GameComponent implements OnInit {
     }
     // push the current result into the array
     ++tempStatsArr[result];
-    this.clearLocalStorage();
+    if (this.resetOnGameOver) {
+      this.clearLocalStorage();
+    }
     localStorage.setItem(
       this.LOCAL_STORAGE_STATS,
       JSON.stringify(tempStatsArr)
