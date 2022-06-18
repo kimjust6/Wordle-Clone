@@ -13,12 +13,29 @@ export class GameWrapperComponent implements OnInit {
 
   public readonly gameNumberType = gameNumber;
   public gameNo: gameNumber = gameNumber.null;
+  public gameWrapperPassedWord: string = 'SLEEP';
 
   constructor(private emitterService: EmitterService) {
     // subscribe to get the :gameNo from activated route
     this.subscriptions.push(
       this.emitterService.pageNumberCtrlItem$.subscribe((res: gameNumber) => {
         this.gameNo = res;
+        switch (this.gameNo) {
+          case gameNumber.first: {
+            this.gameWrapperPassedWord = 'SLEEP';
+            break;
+          }
+          case gameNumber.second: {
+            this.gameWrapperPassedWord = 'WHINE';
+            break;
+          }
+          case gameNumber.third: {
+            this.gameWrapperPassedWord = 'BIRTH';
+            break;
+          }
+          default: {
+          }
+        }
       })
     );
   }

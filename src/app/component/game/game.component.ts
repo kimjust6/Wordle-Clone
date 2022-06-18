@@ -53,6 +53,7 @@ import {
 })
 export class GameComponent implements OnInit {
   @Input() passedWord: string = '';
+  @Input() resetOnGameOver: boolean = true;
 
   private subscriptions: Subscription[] = [];
   public word: any = [];
@@ -70,7 +71,7 @@ export class GameComponent implements OnInit {
   // the state of the attempt
   public correctness = '';
   // state that manages if the game is over
-  public gameOver = false;
+  public isGameOver = false;
   // state that manages win/loss
   public gameWon = false;
   public wordleNumber: any;
@@ -80,6 +81,7 @@ export class GameComponent implements OnInit {
   private readonly LOCAL_STORAGE_ARRAY: string = 'arrays';
   private readonly LOCAL_STORAGE_WORDLE_ANSWER: string = 'wordleAnswer';
   private readonly LOCAL_STORAGE_STATS: string = 'stats';
+  
   //setting values for number of words
   private readonly maxLetterCount: number = 5;
   private readonly maxWordCount: number = 6;
@@ -233,7 +235,7 @@ export class GameComponent implements OnInit {
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     //check if game is over
-    if (this.gameOver) {
+    if (this.isGameOver) {
       return;
     }
 
@@ -395,7 +397,7 @@ export class GameComponent implements OnInit {
 
     // check if we are fully correct
     if (correctLetters == this.maxLetterCount) {
-      this.gameOver = true;
+      this.isGameOver = true;
       this.gameWon = true;
       this.updateStats(this.wordCount);
       this.openStatisticsComponent(true);
@@ -422,14 +424,14 @@ export class GameComponent implements OnInit {
       }
 
       if (this.wordCount == this.maxWordCount - 1) {
-        this.gameOver = true;
+        this.isGameOver = true;
         this.updateStats(this.wordCount + 1);
         // this.setErrorMessage("Game Over!");
         this.openStatisticsComponent(false);
       }
     }
     // if game isn't over, store it in local storage
-    if (!this.gameOver) {
+    if (!this.isGameOver) {
       localStorage.setItem(
         this.LOCAL_STORAGE_ARRAY,
         JSON.stringify(this.array)

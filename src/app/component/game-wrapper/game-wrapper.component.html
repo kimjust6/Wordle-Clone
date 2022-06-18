@@ -1,12 +1,9 @@
-<div class="" *ngIf="gameNo == gameNumberType.null">
-  <app-game passedWord="SLEEP"></app-game>
+<div class="" *ngIf="gameNo !== gameNumberType.null; else ELSE">
+  <app-game
+    [passedWord]="gameWrapperPassedWord"
+    [resetOnGameOver]="false"
+  ></app-game>
 </div>
-<div class="" *ngIf="gameNo == gameNumberType.first">
-  <app-game passedWord="SLEEP"></app-game>
-</div>
-<div class="" *ngIf="gameNo == gameNumberType.second">
-  <app-game passedWord="WHINE"></app-game>
-</div>
-<div class="" *ngIf="gameNo == gameNumberType.third">
-  <app-game passedWord="BIRTH"></app-game>
-</div>
+<ng-template #ELSE>
+  <app-game [resetOnGameOver]="false"></app-game
+></ng-template>
