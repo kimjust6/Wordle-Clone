@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { correctness, kbCorrectness } from '../utilities/interfaces';
+import { gameNumber, kbCorrectness } from '../utilities/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +23,15 @@ export class EmitterService {
   // call this method to change the correctness (ie when enter is pressed)
   public loadKBCorrectnessCtrl(nextCorrectness: kbCorrectness) {
     this.KBCorrectnessCtrl.next(nextCorrectness);
+  }
+  // *************************************************************
+  // subject
+  private pageNumberCtrl = new Subject<gameNumber>();
+  // subscribe to subject to see when gameNumber changes
+  public pageNumberCtrlItem$ = this.pageNumberCtrl.asObservable();
+  // call this method to change the gameNumber
+  public loadpageNumberCtrl(nextCorrectness: gameNumber) {
+    this.pageNumberCtrl.next(nextCorrectness);
   }
   // *************************************************************
   constructor() {}

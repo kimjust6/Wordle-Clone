@@ -10,6 +10,8 @@ import { LoadWordsService } from 'src/app/services/load-words.service';
 import { CommonService } from 'src/app/services/common.service';
 import { StatisticsComponent } from '../statistics/statistics.component';
 import { correctness, kbCorrectness } from 'src/app/utilities/interfaces';
+import { ActivatedRoute } from '@angular/router';
+import { gameNumber } from 'src/app/utilities/interfaces';
 
 import {
   trigger,
@@ -86,8 +88,35 @@ export class GameComponent implements OnInit {
     private wordleWord: LoadWordsService,
     private emitterService: EmitterService,
     public commonService: CommonService,
+    private activatedRoute: ActivatedRoute,
     public datepipe: DatePipe
-  ) {}
+  ) {
+    // get the page number
+    let gameNo = this.activatedRoute.snapshot.paramMap.get('gameNo');
+    let emitValue: gameNumber;
+    switch (Number(gameNo)) {
+      case gameNumber.first: {
+        emitValue = gameNumber.first;
+        break;
+      }
+      case gameNumber.second: {
+        emitValue = gameNumber.second;
+        break;
+      }
+      case gameNumber.third: {
+        emitValue = gameNumber.third;
+        break;
+      }
+      default: {
+        // value of 0
+        emitValue = gameNumber.null;
+      }
+    }
+    // if not 0, emit the value
+    if (emitValue) {
+      this.emitterService.loadpageNumberCtrl(emitValue);
+    }
+  }
 
   ngOnDestroy() {
     for (let sub of this.subscriptions) {
