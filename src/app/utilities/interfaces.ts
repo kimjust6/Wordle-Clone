@@ -8,3 +8,10 @@ export interface kbCorrectness {
   letter: string;
   correctness: correctness;
 }
+
+export enum gameNumber {
+  null = 0,
+  first = 1,
+  second = 2,
+  third = 3,
+}

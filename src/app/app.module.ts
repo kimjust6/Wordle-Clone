@@ -15,6 +15,7 @@ import { AnagramComponent } from './anagram/anagram.component';
 import { ClipboardModule } from 'ngx-clipboard';
 import { DatePipe } from '@angular/common';
 import { KeyboardComponent } from './component/keyboard/keyboard.component';
+import { GameWrapperComponent } from './component/game-wrapper/game-wrapper.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { KeyboardComponent } from './component/keyboard/keyboard.component';
     ValidWordsComponent,
     SolverComponent,
     AnagramComponent,
-    KeyboardComponent
+    KeyboardComponent,
+    GameWrapperComponent
   ],
   imports: [
     BrowserModule,
