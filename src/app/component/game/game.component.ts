@@ -124,6 +124,8 @@ export class GameComponent implements OnInit {
           this.wordCount = 0;
           this.clearLocalStorage();
           this.getRandomWordle();
+        } else if (this.wordCount === this.maxWordCount) {
+          this.isGameOver = true;
         }
       }
     } else {
