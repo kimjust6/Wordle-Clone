@@ -1,4 +1,12 @@
-<!-- <app-game></app-game> -->
-<app-game passedWord="SLEEP"></app-game>
-<!-- <app-game passedWord="WHINE"></app-game> -->
-<!-- <app-game passedWord="BIRTH"></app-game> -->
+<div class="" *ngIf="gameNo == gameNumberType.null">
+  <app-game passedWord="SLEEP"></app-game>
+</div>
+<div class="" *ngIf="gameNo == gameNumberType.first">
+  <app-game passedWord="SLEEP"></app-game>
+</div>
+<div class="" *ngIf="gameNo == gameNumberType.second">
+  <app-game passedWord="WHINE"></app-game>
+</div>
+<div class="" *ngIf="gameNo == gameNumberType.third">
+  <app-game passedWord="BIRTH"></app-game>
+</div>

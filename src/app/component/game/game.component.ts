@@ -55,34 +55,34 @@ export class GameComponent implements OnInit {
   @Input() passedWord: string = '';
 
   private subscriptions: Subscription[] = [];
-  word: any = [];
-  array: any = [];
-  asciiPattern: string = '';
-  values: string = '';
+  public word: any = [];
+  public array: any = [];
+  public asciiPattern: string = '';
+  public values: string = '';
   // the number of attempts made
-  wordCount: number = 0;
+  public wordCount: number = 0;
   // the number of letters typed
-  letterCount: number = 0;
+  public letterCount: number = 0;
   // the error message
-  errorMessage: string = '';
+  public errorMessage: string = '';
   // the answer to the wordle puzzle
-  wordleAnswer: string = '';
+  public wordleAnswer: string = '';
   // the state of the attempt
-  correctness = '';
+  public correctness = '';
   // state that manages if the game is over
-  gameOver = false;
+  public gameOver = false;
   // state that manages win/loss
-  gameWon = false;
-  wordleNumber: any;
+  public gameWon = false;
+  public wordleNumber: any;
   // object that holds all the wordle words
-  allWordleWords: any;
+  public allWordleWords: any;
 
-  readonly LOCAL_STORAGE_ARRAY: string = 'arrays';
-  readonly LOCAL_STORAGE_WORDLE_ANSWER: string = 'wordleAnswer';
-  readonly LOCAL_STORAGE_STATS: string = 'stats';
+  private readonly LOCAL_STORAGE_ARRAY: string = 'arrays';
+  private readonly LOCAL_STORAGE_WORDLE_ANSWER: string = 'wordleAnswer';
+  private readonly LOCAL_STORAGE_STATS: string = 'stats';
   //setting values for number of words
-  readonly maxLetterCount: number = 5;
-  readonly maxWordCount: number = 6;
+  private readonly maxLetterCount: number = 5;
+  private readonly maxWordCount: number = 6;
   constructor(
     private modalService: NgbModal,
     private wordleWord: LoadWordsService,
@@ -91,9 +91,10 @@ export class GameComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     public datepipe: DatePipe
   ) {
-    // get the page number
+    // get the page number from route
     let gameNo = this.activatedRoute.snapshot.paramMap.get('gameNo');
     let emitValue: gameNumber;
+
     switch (Number(gameNo)) {
       case gameNumber.first: {
         emitValue = gameNumber.first;
@@ -114,13 +115,19 @@ export class GameComponent implements OnInit {
     }
     // if not 0, emit the value
     if (emitValue) {
-      this.emitterService.loadpageNumberCtrl(emitValue);
+      this.commonService.delay(100).then(() => {
+        this.emitterService.loadpageNumberCtrl(emitValue);
+      });
     }
+
+    this.LOCAL_STORAGE_ARRAY = emitValue + this.LOCAL_STORAGE_ARRAY;
+    this.LOCAL_STORAGE_WORDLE_ANSWER =
+      emitValue + this.LOCAL_STORAGE_WORDLE_ANSWER;
   }
 
   ngOnDestroy() {
     for (let sub of this.subscriptions) {
-      sub.unsubscribe();
+      sub?.unsubscribe();
     }
   }
   ngOnInit(): void {

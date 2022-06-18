@@ -36,4 +36,14 @@ export class CommonService {
     }
     return returnVal;
   }
+
+  /**
+   * @name  delay
+   * @description adds a delay
+   * @param ms time to delay in ms
+   * @returns Promise<void>
+   */
+  delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
 }
