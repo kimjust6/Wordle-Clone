@@ -6,10 +6,8 @@ import { SolverComponent } from './component/solver/solver.component';
 import { GameWrapperComponent } from './component/game-wrapper/game-wrapper.component';
 
 const routes: Routes = [
-  {path: "", redirectTo: '/first', pathMatch: 'full' },
-  {path: "first", component: GameWrapperComponent },
-  {path: "second", component: GameWrapperComponent },
-  {path: "third", component: GameWrapperComponent },
+  {path: "", redirectTo: '/game/1', pathMatch: 'full' },
+  {path: "game/:gameNo", component: GameWrapperComponent },
   {path: "solver", component: SolverComponent },
   {path: "statistics", component: StatisticsComponent },
   {path: '404', component: NotfoundComponent},
