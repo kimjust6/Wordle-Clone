@@ -1,12 +1,10 @@
 <div class="" *ngIf="gameNo !== gameNumberType.null; else ELSE">
-  if
   <app-game
     [passedWord]="gameWrapperPassedWord"
     [resetOnGameOver]="false"
   ></app-game>
 </div>
 <ng-template #ELSE>
-  else
   <app-game
     [passedWord]="gameWrapperPassedWord"
     [resetOnGameOver]="false"
