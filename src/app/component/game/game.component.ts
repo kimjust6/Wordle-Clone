@@ -77,9 +77,12 @@ export class GameComponent implements OnInit {
   public wordleNumber: any;
   // object that holds all the wordle words
   public allWordleWords: any;
+  // the gameNo from the route
+  public gameNo: number = 0;
 
   private readonly LOCAL_STORAGE_ARRAY: string = 'arrays';
   private readonly LOCAL_STORAGE_WORDLE_ANSWER: string = 'wordleAnswer';
+  private readonly LOCAL_STORAGE_GAME_STATE: string = 'gameState';
   private readonly LOCAL_STORAGE_STATS: string = 'stats';
 
   //setting values for number of words
@@ -94,10 +97,10 @@ export class GameComponent implements OnInit {
     public datepipe: DatePipe
   ) {
     // get the page number from route
-    let gameNo = this.activatedRoute.snapshot.paramMap.get('gameNo');
+    this.gameNo = Number(this.activatedRoute.snapshot.paramMap.get('gameNo'));
     let emitValue: gameNumber;
 
-    switch (Number(gameNo)) {
+    switch (Number(this.gameNo)) {
       case gameNumber.first: {
         emitValue = gameNumber.first;
         break;
@@ -125,6 +128,7 @@ export class GameComponent implements OnInit {
     this.LOCAL_STORAGE_ARRAY = emitValue + this.LOCAL_STORAGE_ARRAY;
     this.LOCAL_STORAGE_WORDLE_ANSWER =
       emitValue + this.LOCAL_STORAGE_WORDLE_ANSWER;
+    this.LOCAL_STORAGE_GAME_STATE = emitValue + this.LOCAL_STORAGE_GAME_STATE;
   }
 
   ngOnDestroy() {
@@ -134,6 +138,7 @@ export class GameComponent implements OnInit {
   }
   ngOnInit(): void {
     this.getRandomWordle();
+
     // subscribe to keypresses on virtual keyboard
     this.subscriptions.push(
       this.emitterService.keyStrokeCtrlItem$.subscribe((keyStroke: string) => {
@@ -163,12 +168,15 @@ export class GameComponent implements OnInit {
         if (element.word[this.maxLetterCount - 1].correctness !== '') {
           ++this.wordCount;
         }
+
         if (this.wordCount === this.maxWordCount && this.resetOnGameOver) {
           this.wordCount = 0;
           this.clearLocalStorage();
           this.getRandomWordle();
         } else if (this.wordCount === this.maxWordCount) {
           this.isGameOver = true;
+
+          
         }
       }
     } else {
@@ -181,6 +189,16 @@ export class GameComponent implements OnInit {
         }
         this.array.push({ word: this.word, shakeState: 'noShake' });
       }
+    }
+
+    // restore game state
+
+    if (localStorage.getItem(this.LOCAL_STORAGE_GAME_STATE)) {
+      let gameData = JSON.parse(
+        localStorage.getItem(this.LOCAL_STORAGE_GAME_STATE) ?? ''
+      );
+      this.gameWon = gameData?.gameWon;
+      this.isGameOver = gameData?.isGameOver;
     }
   }
 
@@ -429,7 +447,7 @@ export class GameComponent implements OnInit {
       if (this.wordCount == this.maxWordCount - 1) {
         this.isGameOver = true;
         this.updateStats(this.wordCount + 1);
-        // this.setErrorMessage("Game Over!");
+        
         this.openStatisticsComponent(false);
       }
     }
@@ -439,6 +457,14 @@ export class GameComponent implements OnInit {
       localStorage.setItem(
         this.LOCAL_STORAGE_ARRAY,
         JSON.stringify(this.array)
+      );
+
+      localStorage.setItem(
+        this.LOCAL_STORAGE_GAME_STATE,
+        JSON.stringify({
+          isGameOver: this.isGameOver,
+          gameWon: this.gameWon,
+        })
       );
     }
   }
