@@ -142,7 +142,7 @@ export class GameComponent implements OnInit {
     // subscribe to keypresses on virtual keyboard
     this.subscriptions.push(
       this.emitterService.keyStrokeCtrlItem$.subscribe((keyStroke: string) => {
-        if (keyStroke?.length === 1) {
+        if (keyStroke?.length === 1 && !this.isGameOver) {
           this.setErrorMessage('');
           this.array[this.wordCount].shakeState = 'noShake';
           this.insertValue(keyStroke);
