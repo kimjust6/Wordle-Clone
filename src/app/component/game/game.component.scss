@@ -1,17 +1,14 @@
 @import "../../../styles.scss";
 
 .container {
+  padding-top: 2.5vh;
+  padding-bottom: 2.5vh;
   transition-duration: 1s;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 65vh;
   flex-direction: column;
 }
-
-// .container .errorSpaceHolder {
-  // min-height: 70px;
-// }
 
 .container .fullWord ul {
   column-count: 5;
