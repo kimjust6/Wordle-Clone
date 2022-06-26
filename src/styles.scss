@@ -6,7 +6,25 @@
 $words-margin: 0.5vh;
 $words-box-size: 8vh;
 
+// pink
+$pink-words-border-color: #6f3055;
+$pink-halfCorrect: #f5bfcb;
+$pink-fullCorrect: #f66fb2;
+$pink-incorrect: #993f69;
+$pink-letterColor: rgb(255, 255, 255);
+$pink-backgroundColor: #faebec;
+$pink-navbar: $pink-halfCorrect;
+$pink-navbarColor: rgb(0, 0, 0);
 
+// normal colors
+$light-words-border-color: grey;
+$light-halfCorrect: rgb(224, 201, 98);
+$light-fullCorrect: #6ecc6e;
+$light-incorrect: rgb(161, 161, 161);
+$light-letterColor: rgb(255, 255, 255);
+$light-backgroundColor: rgb(255, 255, 255);
+$light-navbar: rgb(161, 161, 161);
+$light-navbarColor: rgb(0, 0, 0);
 
 // normal colors
 $words-border-color: grey;
@@ -15,19 +33,8 @@ $fullCorrect: #6ecc6e;
 $incorrect: rgb(161, 161, 161);
 $letterColor: rgb(255, 255, 255);
 $backgroundColor: rgb(255, 255, 255);
-
 $navbar: rgb(161, 161, 161);
 $navbarColor: rgb(0, 0, 0);
-
-// pink
-// $words-border-color: #6f3055;
-// $halfCorrect: #f5bfcb;
-// $fullCorrect: #f66fb2;
-// $incorrect: #993f69;
-// $letterColor: rgb(255, 255, 255);
-// $backgroundColor: #faebec;
-// $navbar: $halfCorrect;
-// $navbarColor: rgb(0, 0, 0);
 
 html,
 body {
