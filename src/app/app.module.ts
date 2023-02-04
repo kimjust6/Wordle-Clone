@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { MatIconModule } from '@angular/material/icon';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -28,16 +29,17 @@ import { GameWrapperComponent } from './component/game-wrapper/game-wrapper.comp
     SolverComponent,
     AnagramComponent,
     KeyboardComponent,
-    GameWrapperComponent
+    GameWrapperComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     NgbModule,
     BrowserAnimationsModule,
-    ClipboardModule
+    ClipboardModule,
+    MatIconModule,
   ],
   providers: [DatePipe],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

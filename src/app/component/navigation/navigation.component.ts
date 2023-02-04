@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-
 import { EmitterService } from 'src/app/services/emitter.service';
 import { gameNumber } from 'src/app/utilities/interfaces';
 
@@ -17,6 +16,7 @@ export class NavigationComponent implements OnInit {
   // the array of subscriptions
   subscriptions: Subscription[] = [];
 
+  theme: string = 'light_mode';
   constructor(private emitterService: EmitterService) {
     this.subscriptions.push(
       this.emitterService.pageNumberCtrlItem$.subscribe((res: gameNumber) => {
@@ -31,5 +31,14 @@ export class NavigationComponent implements OnInit {
     for (let sub of this.subscriptions) {
       sub?.unsubscribe();
     }
+  }
+
+  changeTheme(theme: string) {
+    if (theme == 'light_mode') {
+      this.theme = 'dark_mode';
+    } else {
+      this.theme = 'light_mode';
+    }
+    console.log(this.theme);
   }
 }

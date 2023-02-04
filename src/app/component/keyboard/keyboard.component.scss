@@ -51,16 +51,16 @@
 }
 
 #incorrect {
-  background-color: $incorrect;
-  color: $letterColor;
+  background-color: $light-incorrect;
+  color: $light-letterColor;
 }
 
 #halfCorrect {
-  background-color: $halfCorrect;
-  color: $letterColor;
+  background-color: $light-halfCorrect;
+  color: $light-letterColor;
 }
 
 #fullCorrect {
-  background-color: $fullCorrect;
-  color: $letterColor;
+  background-color: $light-fullCorrect;
+  color: $light-letterColor;
 }

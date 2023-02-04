@@ -1,5 +1,10 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light my-navbar">
-  <div class="container">
+<nav
+  class="navbar navbar-expand-lg my-navbar"
+  [ngClass]="
+    theme == 'light_mode' ? 'navbar-light bg-light' : 'navbar-dark bg-dark'
+  "
+>
+  <div class="container" [ngClass]="theme == 'light_mode' ? '' : 'dark-mode'">
     <a class="navbar-brand my-navbar" href="">Wordle</a>
     <button
       class="navbar-toggler"
@@ -40,6 +45,12 @@
           <a class="nav-link" href="/game/4">Random</a>
         </li> -->
       </ul>
+      <div
+        style="cursor: pointer; color: greenyellow; transition: 3s"
+        (click)="changeTheme(theme)"
+      >
+        <mat-icon aria-label="LightMode">{{ theme }}</mat-icon>
+      </div>
     </div>
   </div>
 </nav>
