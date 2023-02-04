@@ -31,8 +31,6 @@ export class AnagramComponent implements OnInit {
         var temp2 = this.words[j];
         if (this.isAnagram(temp1,temp2))
         {
-          // console.log(temp1);
-          // console.log(temp2);
 
         }
       }
