@@ -27,13 +27,17 @@
   border: 2px;
   font-weight: 600;
   border-style: solid;
-  border-color: $light-words-border-color;
+  color: var(--letter-color2);
+  border-color: var(--words-border-color);
+  
   margin-top: $words-margin + $words-margin;
   margin-left: $words-margin;
   margin-right: $words-margin;
   min-width: $words-box-size;
   min-height: $words-box-size;
 }
+
+
 
 .container .fullWord ul .letterContainer #incorrect {
   background-color: var(--incorrect);

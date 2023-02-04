@@ -1,7 +1,18 @@
 @import "../../../styles.scss";
 
 .my-navbar {
-//   background-color: $navbar !important;
+  //   background-color: $navbar !important;
   color: var(--navbar-color) !important;
   font-size: x-large;
+}
+
+.icon {
+  cursor: pointer;
+  color: var(--icon-color) !important;
+  // transition: 1;
+}
+
+.icon:hover {
+  color: var(--icon-color2) !important;
+  transition: 0.4s;
 }

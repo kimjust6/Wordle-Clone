@@ -18,7 +18,11 @@ export class NavigationComponent implements OnInit {
 
   private readonly LOCAL_STORAGE_THEME: string = 'theme';
 
-  theme: string;
+  public theme: string;
+  public themeInverse: string;
+  public readonly darkIcon: string = 'dark_mode';
+  public readonly lightIcon: string = 'light_mode';
+
   constructor(private emitterService: EmitterService) {
     this.subscriptions.push(
       this.emitterService.pageNumberCtrlItem$.subscribe((res: gameNumber) => {
@@ -26,8 +30,14 @@ export class NavigationComponent implements OnInit {
       })
     );
     // get theme
-    this.theme = localStorage.getItem(this.LOCAL_STORAGE_THEME) ?? 'light_mode';
-    if (this.theme == 'dark_mode') {
+    this.theme =
+      localStorage.getItem(this.LOCAL_STORAGE_THEME) ?? this.lightIcon;
+    if (this.theme == this.lightIcon) {
+      this.themeInverse = this.darkIcon;
+    } else {
+      this.themeInverse = this.lightIcon;
+    }
+    if (this.theme == this.darkIcon) {
       document.body.classList.toggle('dark-theme');
     }
   }
@@ -41,10 +51,12 @@ export class NavigationComponent implements OnInit {
   }
 
   changeTheme(theme: string) {
-    if (theme == 'light_mode') {
-      this.theme = 'dark_mode';
+    if (theme == this.lightIcon) {
+      this.theme = this.darkIcon;
+      this.themeInverse = this.lightIcon;
     } else {
-      this.theme = 'light_mode';
+      this.theme = this.lightIcon;
+      this.themeInverse = this.darkIcon;
     }
     localStorage.setItem(this.LOCAL_STORAGE_THEME, this.theme);
     document.body.classList.toggle('dark-theme');
