@@ -16,13 +16,20 @@ export class NavigationComponent implements OnInit {
   // the array of subscriptions
   subscriptions: Subscription[] = [];
 
-  theme: string = 'light_mode';
+  private readonly LOCAL_STORAGE_THEME: string = 'theme';
+
+  theme: string;
   constructor(private emitterService: EmitterService) {
     this.subscriptions.push(
       this.emitterService.pageNumberCtrlItem$.subscribe((res: gameNumber) => {
         this.gameNo = res;
       })
     );
+    // get theme
+    this.theme = localStorage.getItem(this.LOCAL_STORAGE_THEME) ?? 'light_mode';
+    if (this.theme == 'dark_mode') {
+      document.body.classList.toggle('dark-theme');
+    }
   }
 
   ngOnInit() {}
@@ -39,6 +46,7 @@ export class NavigationComponent implements OnInit {
     } else {
       this.theme = 'light_mode';
     }
-    console.log(this.theme);
+    localStorage.setItem(this.LOCAL_STORAGE_THEME, this.theme);
+    document.body.classList.toggle('dark-theme');
   }
 }
