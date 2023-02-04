@@ -6,18 +6,41 @@
 $words-margin: 0.5vh;
 $words-box-size: 8vh;
 
+// pink
+// $pink-words-border-color: #6f3055;
+// $pink-halfCorrect: #f5bfcb;
+// $pink-fullCorrect: #f66fb2;
+// $pink-incorrect: #993f69;
+// $pink-letterColor: rgb(255, 255, 255);
+// $pink-backgroundColor: #faebec;
+// $pink-navbar: $pink-halfCorrect;
+// $pink-navbarColor: rgb(0, 0, 0);
 
+// dark colors
+$dark-words-border-color: rgb(184, 184, 184);
+$dark-halfCorrect: rgb(179, 146, 0);
+$dark-fullCorrect: #008a12;
+$dark-incorrect: rgb(116, 116, 116);
+$dark-letterColor: rgb(0, 0, 0);
+$dark-letterColor2: rgb(226, 226, 226);
+$dark-backgroundColor: rgb(26, 26, 26);
+$dark-navbar: rgb(161, 161, 161);
+$dark-navbarColor: rgb(0, 0, 0);
+$dark-iconColor: yellow;
+$dark-iconColor2: rgb(158, 158, 0.8);
 
 // normal colors
-$words-border-color: grey;
-$halfCorrect: rgb(224, 201, 98);
-$fullCorrect: #6ecc6e;
-$incorrect: rgb(161, 161, 161);
-$letterColor: rgb(255, 255, 255);
-$backgroundColor: rgb(255, 255, 255);
-
-$navbar: rgb(161, 161, 161);
-$navbarColor: rgb(0, 0, 0);
+$light-words-border-color: grey;
+$light-halfCorrect: rgb(224, 201, 98);
+$light-fullCorrect: #6ecc6e;
+$light-incorrect: rgb(161, 161, 161);
+$light-letterColor: rgb(255, 255, 255);
+$light-letterColor2: rgb(51, 51, 51);
+$light-backgroundColor: rgb(255, 255, 255);
+$light-navbar: rgb(161, 161, 161);
+$light-navbarColor: rgb(0, 0, 0);
+$light-iconColor: rgb(26, 26, 26);
+$light-iconColor2: rgba(99, 99, 99, 0.8);
 
 // pink
 // $words-border-color: #6f3055;
@@ -34,5 +57,42 @@ body {
   height: 100%;
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: $backgroundColor;
+  background-color: var(--background-color);
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+body {
+  --words-border-color: #{$light-words-border-color};
+  --half-correct: #{$light-halfCorrect};
+  --full-correct: #{$light-fullCorrect};
+  --incorrect: #{$light-incorrect};
+  --letter-color: #{$light-letterColor};
+  --letter-color2: #{$light-letterColor2};
+  --background-color: #{$light-backgroundColor};
+  --navbar: #{$light-navbar};
+  --navbar-color: #{$light-navbarColor};
+  --icon-color: #{$light-iconColor};
+  --icon-color2: #{$light-iconColor2};
+}
+
+body.dark-theme {
+  --words-border-color: #{$dark-words-border-color};
+  --half-correct: #{$dark-halfCorrect};
+  --full-correct: #{$dark-fullCorrect};
+  --incorrect: #{$dark-incorrect};
+  --letter-color: #{$dark-letterColor};
+  --letter-color2: #{$dark-letterColor2};
+  --background-color: #{$dark-backgroundColor};
+  --navbar: #{$dark-navbar};
+  --navbar-color: #{$dark-navbarColor};
+  --icon-color: #{$dark-iconColor};
+  --icon-color2: #{$dark-iconColor2};
 }

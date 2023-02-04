@@ -30,8 +30,8 @@ export class EmitterService {
   // subscribe to subject to see when gameNumber changes
   public pageNumberCtrlItem$ = this.pageNumberCtrl.asObservable();
   // call this method to change the gameNumber
-  public loadpageNumberCtrl(nextCorrectness: gameNumber) {
-    this.pageNumberCtrl.next(nextCorrectness);
+  public loadpageNumberCtrl(gameNumber: gameNumber) {
+    this.pageNumberCtrl.next(gameNumber);
   }
   // *************************************************************
   constructor() {}

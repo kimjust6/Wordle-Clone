@@ -38,7 +38,6 @@ export class KeyboardComponent implements OnInit {
     this.subscriptions.push(
       this.emitterService.pageNumberCtrlItem$.subscribe((res: gameNumber) => {
         this.gameNo = res;
-
         // load keyboard styles from localStorage
         let myKBStyle = localStorage.getItem(this.getKBStyleKey());
         if (myKBStyle) {
@@ -131,5 +130,9 @@ export class KeyboardComponent implements OnInit {
 
   getKBStyleKey() {
     return this.gameNo + this.KB_STYLE_ARRAY;
+  }
+
+  resetKeyboard(){
+    localStorage.removeItem(this.getKBStyleKey())
   }
 }

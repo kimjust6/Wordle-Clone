@@ -84,6 +84,7 @@ export class GameComponent implements OnInit {
   private readonly LOCAL_STORAGE_WORDLE_ANSWER: string = 'wordleAnswer';
   private readonly LOCAL_STORAGE_GAME_STATE: string = 'gameState';
   private readonly LOCAL_STORAGE_STATS: string = 'stats';
+  private readonly LOCAL_STORAGE_KB: string = 'kbStyle';
 
   //setting values for number of words
   private readonly maxLetterCount: number = 5;
@@ -94,33 +95,15 @@ export class GameComponent implements OnInit {
     private emitterService: EmitterService,
     public commonService: CommonService,
     private activatedRoute: ActivatedRoute,
-    public datepipe: DatePipe
+    public datepipe: DatePipe // private constants: Constants
   ) {
     // get the page number from route
     this.gameNo = Number(this.activatedRoute.snapshot.paramMap.get('gameNo'));
-    let emitValue: gameNumber;
+    let emitValue: gameNumber = Number(this.gameNo);
 
-    switch (Number(this.gameNo)) {
-      case gameNumber.first: {
-        emitValue = gameNumber.first;
-        break;
-      }
-      case gameNumber.second: {
-        emitValue = gameNumber.second;
-        break;
-      }
-      case gameNumber.third: {
-        emitValue = gameNumber.third;
-        break;
-      }
-      default: {
-        // value of 0
-        emitValue = gameNumber.null;
-      }
-    }
     // if not 0, emit the value
     if (emitValue !== gameNumber.null) {
-      this.commonService.delay(100).then(() => {
+      this.commonService.delay(200).then(() => {
         this.emitterService.loadpageNumberCtrl(emitValue);
       });
     }
@@ -129,6 +112,7 @@ export class GameComponent implements OnInit {
     this.LOCAL_STORAGE_WORDLE_ANSWER =
       emitValue + this.LOCAL_STORAGE_WORDLE_ANSWER;
     this.LOCAL_STORAGE_GAME_STATE = emitValue + this.LOCAL_STORAGE_GAME_STATE;
+    this.LOCAL_STORAGE_KB = emitValue + this.LOCAL_STORAGE_KB;
   }
 
   ngOnDestroy() {
@@ -168,16 +152,6 @@ export class GameComponent implements OnInit {
         if (element.word[this.maxLetterCount - 1].correctness !== '') {
           ++this.wordCount;
         }
-
-        if (this.wordCount === this.maxWordCount && this.resetOnGameOver) {
-          this.wordCount = 0;
-          this.clearLocalStorage();
-          this.getRandomWordle();
-        } else if (this.wordCount === this.maxWordCount) {
-          this.isGameOver = true;
-
-          
-        }
       }
     } else {
       //setup the array for first time
@@ -192,13 +166,18 @@ export class GameComponent implements OnInit {
     }
 
     // restore game state
-
     if (localStorage.getItem(this.LOCAL_STORAGE_GAME_STATE)) {
       let gameData = JSON.parse(
         localStorage.getItem(this.LOCAL_STORAGE_GAME_STATE) ?? ''
       );
       this.gameWon = gameData?.gameWon;
       this.isGameOver = gameData?.isGameOver;
+    }
+
+    if (this.isGameOver && this.resetOnGameOver) {
+      this.resetGame();
+    } else if (this.wordCount === this.maxWordCount) {
+      this.isGameOver = true;
     }
   }
 
@@ -209,7 +188,8 @@ export class GameComponent implements OnInit {
   clearLocalStorage() {
     localStorage.removeItem(this.LOCAL_STORAGE_ARRAY);
     localStorage.removeItem(this.LOCAL_STORAGE_WORDLE_ANSWER);
-    localStorage.clear();
+    localStorage.removeItem(this.LOCAL_STORAGE_KB);
+    localStorage.removeItem(this.LOCAL_STORAGE_GAME_STATE);
   }
 
   /**
@@ -351,6 +331,10 @@ export class GameComponent implements OnInit {
         this.array[this.wordCount].shakeState = 'shake';
       }
     }
+
+    if (this.resetOnGameOver && this.isGameOver) {
+      this.resetGame();
+    }
   }
 
   /**
@@ -419,7 +403,6 @@ export class GameComponent implements OnInit {
     if (correctLetters == this.maxLetterCount) {
       this.isGameOver = true;
       this.gameWon = true;
-
       this.updateStats(this.wordCount);
       this.openStatisticsComponent(true);
     } else {
@@ -447,7 +430,6 @@ export class GameComponent implements OnInit {
       if (this.wordCount == this.maxWordCount - 1) {
         this.isGameOver = true;
         this.updateStats(this.wordCount + 1);
-        
         this.openStatisticsComponent(false);
       }
     }
@@ -469,6 +451,11 @@ export class GameComponent implements OnInit {
     }
   }
 
+  resetGame() {
+    this.wordCount = 0;
+    this.clearLocalStorage();
+    this.getRandomWordle();
+  }
   /**
    * @name updateStats
    * @description updates the array of stats in localStorage

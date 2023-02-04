@@ -1,6 +1,11 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light my-navbar">
-  <div class="container">
-    <a class="navbar-brand my-navbar" href="">Shower Wordle</a>
+<nav
+  class="navbar navbar-expand-lg my-navbar"
+  [ngClass]="
+    theme == 'light_mode' ? 'navbar-light bg-light' : 'navbar-dark bg-dark'
+  "
+>
+  <div class="container" [ngClass]="theme == 'light_mode' ? '' : 'dark-mode'">
+    <a class="navbar-brand my-navbar" href="">Wordle</a>
     <button
       class="navbar-toggler"
       type="button"
@@ -19,21 +24,32 @@
           class="nav-item"
           [className]="gameNo == gameNumberType.first ? 'active' : ''"
         >
-          <a class="nav-link" href="/game/1">First</a>
+          <a class="nav-link" href="/game/1">Random 1</a>
         </li>
         <li
           class="nav-item"
           [className]="gameNo == gameNumberType.second ? 'active' : ''"
         >
-          <a class="nav-link" href="/game/2">Second</a>
+          <a class="nav-link" href="/game/2">Random 2</a>
         </li>
         <li
           class="nav-item"
           [className]="gameNo == gameNumberType.third ? 'active' : ''"
         >
-          <a class="nav-link" href="/game/3">Third</a>
+          <a class="nav-link" href="/game/3">Word passed from Component</a>
         </li>
+        <!-- <li
+          class="nav-item"
+          [className]="gameNo == gameNumberType.fourth ? 'active' : ''"
+        >
+          <a class="nav-link" href="/game/4">Random</a>
+        </li> -->
       </ul>
+      <div class="icon"
+        (click)="changeTheme(theme)"
+      >
+        <mat-icon aria-label="LightMode">{{ themeInverse }}</mat-icon>
+      </div>
     </div>
   </div>
 </nav>

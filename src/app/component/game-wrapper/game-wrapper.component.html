@@ -1,12 +1,17 @@
-<div class="" *ngIf="gameNo !== gameNumberType.null; else ELSE">
-  <app-game
-    [passedWord]="gameWrapperPassedWord"
-    [resetOnGameOver]="false"
-  ></app-game>
+<app-navigation></app-navigation>
+<!-- use a random word -->
+<div
+  *ngIf="
+    gameNo == gameNumberType.first || gameNo == gameNumberType.second;
+    else ELSE
+  "
+>
+  <app-game [resetOnGameOver]="true"></app-game>
 </div>
+<!-- pass a hardcoded word -->
 <ng-template #ELSE>
   <app-game
     [passedWord]="gameWrapperPassedWord"
-    [resetOnGameOver]="false"
+    [resetOnGameOver]="true"
   ></app-game
 ></ng-template>

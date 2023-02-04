@@ -39,6 +39,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border-color: var(--letter-color2);
+  color: var(--letter-color2);
 }
 
 #oddKeyboard {
@@ -51,16 +53,16 @@
 }
 
 #incorrect {
-  background-color: $incorrect;
-  color: $letterColor;
+  background-color: var(--incorrect);
+  color: var(--letter-color);
 }
 
 #halfCorrect {
-  background-color: $halfCorrect;
-  color: $letterColor;
+  background-color: var(--half-correct);
+  color: var(--letter-color);
 }
 
 #fullCorrect {
-  background-color: $fullCorrect;
-  color: $letterColor;
+  background-color: var(--full-correct);
+  color: var(--letter-color);
 }

@@ -27,7 +27,9 @@
   border: 2px;
   font-weight: 600;
   border-style: solid;
-  border-color: $words-border-color;
+  color: var(--letter-color2);
+  border-color: var(--words-border-color);
+  
   margin-top: $words-margin + $words-margin;
   margin-left: $words-margin;
   margin-right: $words-margin;
@@ -35,16 +37,18 @@
   min-height: $words-box-size;
 }
 
+
+
 .container .fullWord ul .letterContainer #incorrect {
-  background-color: $incorrect;
-  color: $letterColor;
+  background-color: var(--incorrect);
+  color: var(--letter-color);
 }
 
 .container .fullWord ul .letterContainer #halfCorrect {
-  background-color: $halfCorrect;
-  color: $letterColor;
+  background-color: var(--half-correct);
+  color: var(--letter-color);
 }
 .container .fullWord ul .letterContainer #fullCorrect {
-  background-color: $fullCorrect;
-  color: $letterColor;
+  background-color: var(--full-correct);
+  color: var(--letter-color);
 }
