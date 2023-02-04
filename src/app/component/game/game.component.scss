@@ -36,15 +36,15 @@
 }
 
 .container .fullWord ul .letterContainer #incorrect {
-  background-color: $light-incorrect;
-  color: $light-letterColor;
+  background-color: var(--incorrect);
+  color: var(--letter-color);
 }
 
 .container .fullWord ul .letterContainer #halfCorrect {
-  background-color: $light-halfCorrect;
-  color: $light-letterColor;
+  background-color: var(--half-correct);
+  color: var(--letter-color);
 }
 .container .fullWord ul .letterContainer #fullCorrect {
-  background-color: $light-fullCorrect;
-  color: $light-letterColor;
+  background-color: var(--full-correct);
+  color: var(--letter-color);
 }

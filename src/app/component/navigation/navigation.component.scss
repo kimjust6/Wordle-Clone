@@ -2,6 +2,6 @@
 
 .my-navbar {
 //   background-color: $navbar !important;
-  color: $light-navbarColor !important;
+  color: var(--navbar-color) !important;
   font-size: x-large;
 }

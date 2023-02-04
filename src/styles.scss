@@ -32,7 +32,7 @@ $light-halfCorrect: rgb(224, 201, 98);
 $light-fullCorrect: #6ecc6e;
 $light-incorrect: rgb(161, 161, 161);
 $light-letterColor: rgb(255, 255, 255);
-$light-backgroundColor: rgb(31, 31, 31);
+$light-backgroundColor: rgb(255, 255, 255);
 $light-navbar: rgb(161, 161, 161);
 $light-navbarColor: rgb(0, 0, 0);
 
@@ -51,7 +51,7 @@ body {
   height: 100%;
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: $light-backgroundColor;
+  background-color: var(--background-color);
 }
 
 html,
@@ -64,23 +64,23 @@ body {
 }
 
 body {
-  --words-border-color: $light-words-border-color;
-  --half-correct: $light-halfCorrect;
-  --full-correct: $light-fullCorrect;
-  --incorrect: $light-incorrect;
-  --letter-color: $light-letterColor;
-  --background-color: $light-backgroundColor;
-  --navbar: $light-navbar;
-  --navbar-color: $light-navbarColor;
+  --words-border-color: #{$light-words-border-color};
+  --half-correct: #{$light-halfCorrect};
+  --full-correct: #{$light-fullCorrect};
+  --incorrect: #{$light-incorrect};
+  --letter-color: #{$light-letterColor};
+  --background-color: #{$light-backgroundColor};
+  --navbar: #{$light-navbar};
+  --navbar-color: #{$light-navbarColor};
 }
 
 body.dark-theme {
-  --words-border-color: $dark-words-border-color;
-  --half-correct: $dark-halfCorrect;
-  --full-correct: $dark-fullCorrect;
-  --incorrect: $dark-incorrect;
-  --letter-color: $dark-letterColor;
-  --background-color: $dark-backgroundColor;
-  --navbar: $dark-navbar;
-  --navbar-color: $dark-navbarColor;
+  --words-border-color: #{$dark-words-border-color};
+  --half-correct: #{$dark-halfCorrect};
+  --full-correct: #{$dark-fullCorrect};
+  --incorrect: #{$dark-incorrect};
+  --letter-color: #{$dark-letterColor};
+  --background-color: #{$dark-backgroundColor};
+  --navbar: #{$dark-navbar};
+  --navbar-color: #{$dark-navbarColor};
 }
