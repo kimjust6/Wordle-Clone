@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { EmitterService } from 'src/app/services/emitter.service';
+import { MobileViewService } from 'src/app/services/mobileView.service';
 import { gameNumber } from 'src/app/utilities/interfaces';
 
 @Component({
@@ -23,12 +24,16 @@ export class NavigationComponent implements OnInit {
   public readonly darkIcon: string = 'dark_mode';
   public readonly lightIcon: string = 'light_mode';
 
-  constructor(private emitterService: EmitterService) {
+  constructor(
+    private emitterService: EmitterService,
+    public mobileViewService: MobileViewService
+  ) {
     this.subscriptions.push(
       this.emitterService.pageNumberCtrlItem$.subscribe((res: gameNumber) => {
         this.gameNo = res;
       })
     );
+
     // get theme
     this.theme =
       localStorage.getItem(this.LOCAL_STORAGE_THEME) ?? this.lightIcon;

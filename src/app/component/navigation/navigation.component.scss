@@ -1,15 +1,19 @@
 @import "../../../styles.scss";
 
 .my-navbar {
-  //   background-color: $navbar !important;
   color: var(--navbar-color) !important;
-  font-size: x-large;
+  font-size: x-large !important;
+}
+
+.navbar-brand {
+  font-weight: 700 !important;
+  display: flex;
 }
 
 .icon {
   cursor: pointer;
+  padding-left: 0.5em;
   color: var(--icon-color) !important;
-  // transition: 1;
 }
 
 .icon:hover {
